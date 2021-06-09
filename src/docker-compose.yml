@@ -4,6 +4,6 @@ services:
     image: kmart
     build: 
         context: ./
-        dockerfile: ./kmart/Dockerfile
+        dockerfile: ./Kmart/Dockerfile
     restart: always
     working_dir: /kmart
