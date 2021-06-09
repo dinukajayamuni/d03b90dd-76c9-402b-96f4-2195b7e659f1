@@ -1,0 +1,46 @@
+name: kmart-$(Date:yyyyMMdd).$(Rev:r)
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+    - refs/heads/* 
+variables:
+  vmImageName: 'ubuntu-latest'
+  artifactName: 'kmart'
+  appPath: '$(Build.ArtifactStagingDirectory)/$(artifactName)/'
+  tag: '$(Build.BuildId)'
+stages:
+- stage: Build
+  displayName: Build
+  jobs:
+    - job: Build
+      displayName: 'Build and Push - Docker Compose'
+      pool:
+        vmImage: $(vmImageName)
+      steps:
+      - task: DockerCompose@0
+        displayName: Build Docker Images
+        inputs:
+          action: Build services
+          dockerComposeFile: 'src/docker-compose.yml'
+          projectName: ''
+          qualifyImageNames: true
+          additionalImageTags: $(tag)
+      # - task: DockerCompose@0
+      #   displayName: Push
+      #   inputs:
+      #     action: Push services
+      #     azureSubscriptionEndpoint: $(azureSubscription)
+      #     azureContainerRegistry: $(containerRegistry)
+      #     dockerComposeFile: '/src/docker-compose.yml'
+      #     projectName: ''
+      #     qualifyImageNames: true
+      #     additionalImageTags: $(tag)
+      - template: unit-tests.yml
+      - task: PublishTestResults@2
+        displayName: 'Publish Test results'
+        inputs:
+          testRunner: VSTest
+          testResultsFiles: '**/*.trx'
+          failTaskOnFailedTests: true
