@@ -1,0 +1,5 @@
+steps:
+  - template: retrieve-tests-from-docker-container.yml
+    parameters:
+      label: unittests
+      containerName: kmartUnitTests

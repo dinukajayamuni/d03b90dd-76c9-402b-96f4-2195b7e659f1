@@ -1,0 +1,9 @@
+steps:
+  - script: |
+      export unittestsImageId_${{ parameters.containerName }}=$(docker images --filter "label=${{ parameters.label }}=true" -q)
+      docker create --name ${{ parameters.containerName }} $unittestsImageId_${{ parameters.containerName }}
+      docker cp ${{ parameters.containerName }}:/out/testresults $(System.DefaultWorkingDirectory)/testresults
+      docker stop ${{ parameters.containerName }}
+      docker rm ${{ parameters.containerName }}
+    displayName: Copy Unit test results ${{ parameters.containerName }}
+    continueOnError: false

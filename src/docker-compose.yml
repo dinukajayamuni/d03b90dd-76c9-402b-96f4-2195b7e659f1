@@ -1,0 +1,9 @@
+version: '3.7'
+services:
+  kmart:
+    image: kmart
+    build: 
+        context: ./
+        dockerfile: ./kmart/Dockerfile
+    restart: always
+    working_dir: /kmart

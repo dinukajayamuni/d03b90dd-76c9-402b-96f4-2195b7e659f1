@@ -1,0 +1,9 @@
+steps:
+  - script: |
+      export copyContainerId=$(docker images --filter "label=${{ parameters.label }}=true" -q)
+      docker create --name ${{ parameters.containerName }} $copyContainerId
+      docker cp ${{ parameters.containerName }}:/home/site/wwwroot ${{ parameters.destinationDirectory }}
+      docker stop ${{ parameters.containerName }}
+      docker rm ${{ parameters.containerName }}
+    displayName: Copy Results ${{ parameters.containerName }}
+    continueOnError: false
